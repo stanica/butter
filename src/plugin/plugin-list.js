@@ -51,7 +51,7 @@ define( [ "util/dragndrop" ], function( DragNDrop ){
         }
       });
 
-      element.setAttribute( "data-butter-plugin-type", e.data.type );
+      element.setAttribute( "data-popcorn-plugin-type", e.data.type );
       element.setAttribute( "data-butter-draggable-type", "plugin" );
       
       _containerElement.appendChild( element );

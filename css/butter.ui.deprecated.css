@@ -1167,7 +1167,7 @@ input.form-error {
   cursor: pointer;
 }
 
-#butter-tray #butter-plugin {
+#butter-tray #popcorn-plugin {
   border-radius: 6px;
   moz-border-radius: 6px;
   o-border-radius: 6px;
@@ -1186,7 +1186,7 @@ input.form-error {
   position: relative;
 }
 
-#butter-tray #butter-plugin .list-wrapper {
+#butter-tray #popcorn-plugin .list-wrapper {
   position: relative;
   top: 18px;
   padding-left: 5px;
@@ -1195,13 +1195,13 @@ input.form-error {
   overflow: hidden;
 }
 
-#butter-tray #butter-plugin .list {
+#butter-tray #popcorn-plugin .list {
   position: relative;
   padding-left: 5px;
   width: 100px;
 }
 
-#butter-tray #butter-plugin .title {
+#butter-tray #popcorn-plugin .title {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -1213,12 +1213,12 @@ input.form-error {
   background-color: #3E3E3E;
 }
 
-#butter-tray #butter-plugin .title span {
+#butter-tray #popcorn-plugin .title span {
   padding-left: 8px;
   color: #fff;
 }
 
-#butter-tray #butter-plugin .list-item {
+#butter-tray #popcorn-plugin .list-item {
   font-family: Verdana;
   color: #fff;
   list-style-type: none;
@@ -1229,14 +1229,14 @@ input.form-error {
   text-overflow: ellipsis;
 }
 
-#butter-tray #butter-plugin .scroll-bar-v {
+#butter-tray #popcorn-plugin .scroll-bar-v {
   right: 3px;
   width: 6px;
   height: 100px;
   top: 18px;
 }
 
-#butter-tray #butter-plugin .scroll-bar-v .scroll-handle {
+#butter-tray #popcorn-plugin .scroll-bar-v .scroll-handle {
   width: 4px;
 }
 

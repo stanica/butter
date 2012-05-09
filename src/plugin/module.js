@@ -75,7 +75,7 @@
           _this = this,
           _pattern = '<div class="list-item $type_tool">$type</div>';
 
-      _container.id = "butter-plugin";
+      _container.id = "popcorn-plugin";
       _listContainer.className = "list";
       _listWrapper.className = "list-wrapper";
 
@@ -208,11 +208,11 @@
       DragNDrop.droppable( _container, {
         drop: function( element ){
           if( element.getAttribute( "data-butter-draggable-type" ) === "plugin" ){
-            var pluginType = element.getAttribute( "data-butter-plugin-type" ),
+            var pluginType = element.getAttribute( "data-popcorn-plugin-type" ),
                 plugin = _this.get( pluginType );
             if( plugin ){
               for( var i=0; i<_listContainer.childNodes.length; ++i ){
-                if( _listContainer.childNodes[ i ].getAttribute( "data-butter-plugin-type" ) === pluginType ){
+                if( _listContainer.childNodes[ i ].getAttribute( "data-popcorn-plugin-type" ) === pluginType ){
                   return;
                 }  
               }

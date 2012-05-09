@@ -4,7 +4,7 @@
 
 define( [ "util/dragndrop" ], function( DragNDrop ){
 
-  var PLUGIN_ELEMENT_PREFIX = "butter-plugin-";
+  var PLUGIN_ELEMENT_PREFIX = "popcorn-plugin-";
 
   /*************************************************************************/
   // Support createContextualFragment when missing (IE9)
@@ -197,7 +197,7 @@ define( [ "util/dragndrop" ], function( DragNDrop ){
         pluginElement = range.createContextualFragment( patternInstance ).childNodes[ 0 ];
       }
       pluginElement.id = PLUGIN_ELEMENT_PREFIX + _this.type;
-      pluginElement.setAttribute( "data-butter-plugin-type", _this.type );
+      pluginElement.setAttribute( "data-popcorn-plugin-type", _this.type );
       pluginElement.setAttribute( "data-butter-draggable-type", "plugin" );
       DragNDrop.helper( pluginElement, {
         image: _helper,
