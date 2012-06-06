@@ -1,6 +1,7 @@
 {
   "name": "default-config",
   "baseDir": "../",
+  "cssRenderClientSide": false,
   "snapshotHTMLOnReady": true,
   "scrapePage": true,
   "editor": {
@@ -9,7 +10,6 @@
   },
   "ui": {
     "enabled": true,
-    "cssRenderClientSide": false,
     "trackEventHighlight": "click",
     "title": "Popcorn Maker"
   },
