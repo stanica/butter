@@ -1,4 +1,5 @@
 {
   "savedDataUrl": "saved-data.json",
-  "baseDir": "../"
+  "baseDir": "../",
+  "cssRenderClientSide": true
 }
