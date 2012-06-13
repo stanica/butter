@@ -1,7 +1,7 @@
 define( [ "ui/page-element", "ui/logo-spinner", "util/lang", "ui/widget/textbox", "text!layouts/media-view.html" ],
   function( PageElement, LogoSpinner, LangUtils, TextboxWrapper, HTML_TEMPLATE ){
 
-  var DEFAULT_SUBTITLE = "Supports HTML5 video and YouTube",
+  var DEFAULT_SUBTITLE = "Supports HTML5 video, YouTube, and Vimeo",
       MOUSE_OUT_DURATION = 300,
       MAX_URLS = 4;
 
@@ -13,7 +13,7 @@ define( [ "ui/page-element", "ui/logo-spinner", "util/lang", "ui/widget/textbox"
         _logoSpinner;
 
     var _propertiesElement = LangUtils.domFragment( HTML_TEMPLATE ),
-        _container = _propertiesElement.querySelector( "div.container" ),
+        _container = _propertiesElement.querySelector( "div.butter-container" ),
         _urlContainer = _propertiesElement.querySelector( "div.url" ),
         _urlTextbox = _propertiesElement.querySelector( "input[type='text']" ),
         _subtitle = _propertiesElement.querySelector( ".form-field-notes" ),
