@@ -80,6 +80,7 @@ define([], function(){
           scriptElement.onerror = error;
           scriptElement.href = url;
           document.head.appendChild( scriptElement );
+          callback();
         }
         else if( callback ){
           callback();
