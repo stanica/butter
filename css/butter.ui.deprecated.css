@@ -491,7 +491,7 @@ input.form-error {
   position: absolute;
   top: 4px;
   left: 20px;
-  width: 80px;
+  width: 57px;
   height: 15px;
   background-image: url( "../resources/status-bg.png" );
   color: #999999;
@@ -647,7 +647,7 @@ input.form-error {
 #butter-timeline .track-handle-container {
   position: absolute;
   height: 145px;
-  width: 105px;
+  width: 82px;
   left: 5px;
   top: 6px;
   bottom: 18px;
@@ -672,7 +672,7 @@ input.form-error {
 
 #butter-timeline .track-handle-container .handle-list .track-handle {
   cursor: pointer;
-  width: 95px;
+  width: 73px;
   -moz-border-radius: 6px;
   -o-border-radius: 6px;
   -webkit-border-radius: 6px;
@@ -749,7 +749,7 @@ input.form-error {
 
 #status-bar .media-status-container {
   height: 30px;
-  padding: 0 150px 0 115px;
+  padding: 0 150px 0 95px;
   position: relative;
 }
 
@@ -915,7 +915,7 @@ input.form-error {
 
 #butter-timeline .media-instance {
   height: 190px;
-  padding: 0 150px 0 115px;
+  padding: 0 115px 0 95px;
   position: relative;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -1149,7 +1149,7 @@ input.form-error {
   position: absolute;
   right: 10px;
   top: 55px;
-  width: 120px;
+  width: 85px;
   height: 150px;
 }
 
@@ -1256,7 +1256,7 @@ input.form-error {
   box-shadow: 0 1px 0 #656565;
   padding: 3px;
   height: 115px;
-  width: 115px;
+  width: 80px;
   position: relative;
 }
 
@@ -1455,12 +1455,12 @@ input.form-error {
 }
 
 #butter-tray #add-popcorn {
-  width: 100px;
+  width: 65px;
   margin-top: 6px;
 }
 
 #butter-tray #add-track {
   position: absolute;
-  left: 4px;
-  width: 96px;
+  left: 3px;
+  width: 75px;
 }
