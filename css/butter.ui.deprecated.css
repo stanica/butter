@@ -1343,7 +1343,7 @@ input.form-error {
   display: inline-block;
   padding: 5px 10px 4px;
   height: 100px;
-  margin-top: 0;
+  margin-top: 100px;
   font-size: 62px;
   font-weight: 500;
   line-height: 18px;
