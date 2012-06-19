@@ -81,8 +81,7 @@ define([], function(){
           scriptElement.href = url;
           document.head.appendChild( scriptElement );
           callback();
-        }
-        else if( callback ){
+        } else if ( callback ) {
           callback();
         }
       }

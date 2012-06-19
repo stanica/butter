@@ -399,13 +399,13 @@ define( [ "core/logger", "core/eventmanager" ], function( Logger, EventManager )
       }
 
       // set a timeout to occur after timeoutDuration milliseconds
-      setTimeout(function(){
+      /*setTimeout(function(){
         // if success hasn't already occured, raise the stop flag and call timeoutCallback
         if ( !ready ) {
           stop = true;
           timeoutCallback();
         }
-      }, MEDIA_WAIT_DURATION );
+      }, MEDIA_WAIT_DURATION );*/
 
       //init
       doCheck();

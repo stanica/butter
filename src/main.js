@@ -44,19 +44,20 @@
           ){
 
     var __guid = 0,
-        __instances = [];
+        __instances = [],
+        __showUI = false,
+        __mediaObj,
+        uaWarningDiv;
 
     var Butter = function( options ){
       return new ButterInit( options );
     }; //Butter
 
     Butter.showUAWarning = function() {
-      var uaWarningDiv = Lang.domFragment( UAWarningLayout );
+      __showUI = true;
+      uaWarningDiv = Lang.domFragment( UAWarningLayout );
       document.body.appendChild( uaWarningDiv );
       uaWarningDiv.classList.add( "slide-out" );
-      uaWarningDiv.getElementsByClassName( "close-button" )[0].onclick = function () {
-        document.body.removeChild( uaWarningDiv );
-      };
     };
 
     function ButterInit( butterOptions ){
@@ -600,6 +601,7 @@
               } //if
 
               if( !oldMedia ){
+                __mediaObj = medias[ i ];
                 _this.addMedia({ target: medias[ i ].id, url: url, popcornOptions: mediaPopcornOptions });
               }
             } //for
@@ -758,24 +760,39 @@
 
         _page = new Page( loader, _config );
 
-        _this.ui = new UI( _this  );
+        function loadUI( hideUI ) {
+          // somehwhere in here you need to call hideUI
+          // the code will be
+          // hideUI && hideUI()
+          _this.ui = new UI( _this  );
 
-        _this.ui.load(function(){
-          //prepare the page next
-          preparePopcornScriptsAndCallbacks(function(){
-            preparePage(function(){
-              moduleCollection.ready(function(){
-                if( _config.value( "snapshotHTMLOnReady" ) ){
-                  _page.snapshotHTML();
-                }
-                attemptDataLoad(function(){
-                  //fire the ready event
-                  _this.dispatch( "ready", _this );
+          _this.ui.load(function(){
+            //prepare the page next
+            preparePopcornScriptsAndCallbacks(function(){
+              preparePage(function(){
+                moduleCollection.ready(function(){
+                  if( _config.value( "snapshotHTMLOnReady" ) ){
+                    _page.snapshotHTML();
+                  }
+                  attemptDataLoad(function(){
+                    //fire the ready event
+                    _this.dispatch( "ready", _this );
+                  });
                 });
               });
             });
           });
+        }
+
+        loadUI(function() {
         });
+        if ( __showUI ) {
+          uaWarningDiv.children[ 0 ].addEventListener( "click", function() {
+            __mediaObj.play();
+            // do show UI shit here
+            document.body.removeChild( uaWarningDiv );
+          }, false);
+        }
 
       } //readConfig
 

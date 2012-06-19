@@ -14,7 +14,11 @@
     "wwwRoot": "../",
     "templates": "../templates",
     "publish": "view",
+<<<<<<< HEAD
     "hostname": "http://142.204.133.46:8888"
+=======
+    "hostname": "http://142.204.133.43:8888"
+>>>>>>> 811eca0bbdd7f55fff3bc1be4a1bb1a3ef7e50ce
   },
   "templates": {
     "test": "{{templateBase}}test-config.json",
