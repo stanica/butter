@@ -587,7 +587,7 @@ input.form-error {
 #status-bar .mute-button-container {
   position: absolute;
   top: 5px;
-  right: 120px;
+  right: 85px;
   width: 17px;
   height: 17px;
   background-image: url( "../resources/status-bg.png" );
@@ -1331,7 +1331,7 @@ input.form-error {
   position: absolute;
   top: 155px;
   left: 10px;
-  width: 100px;
+  width: 77px;
   height: 10px;
 }
 
