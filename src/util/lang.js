@@ -307,11 +307,9 @@ define( [], function(){
       range.selectNode( document.body.firstChild );
       fragment = range.createContextualFragment( inputString );
 
-      if( fragment.childNodes.length === 1 ){
         var child = fragment.firstChild;
         fragment.removeChild( child );
         return child;
-      }
 
       return fragment;
     }
