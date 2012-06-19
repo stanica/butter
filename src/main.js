@@ -787,7 +787,7 @@
         loadUI(function() {
         });
         if ( __showUI ) {
-          uaWarningDiv.children[ 0 ].addEventListener( "click", function() {
+          uaWarningDiv.getElementsByClassName("butter-btn-ipad")[ 0 ].addEventListener( "click", function() {
             __mediaObj.play();
             // do show UI shit here
             document.body.removeChild( uaWarningDiv );
