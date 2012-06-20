@@ -8,7 +8,7 @@
       DEFAULT_TRACKEVENT_OFFSET = 0.01;
 
   var ACCEPTED_UA_LIST = {
-    "Chrome": 17,
+    
     "Firefox": 10
   };
 
@@ -787,8 +787,10 @@
         loadUI(function() {
         });
         if ( __showUI ) {
-          uaWarningDiv.children[ 0 ].addEventListener( "click", function() {
+          uaWarningDiv.getElementsByClassName("butter-btn-ipad")[ 0 ].addEventListener( "click", function() {
+          console.log("Button touched");
             __mediaObj.play();
+            __mediaObj.pause();
             // do show UI shit here
             document.body.removeChild( uaWarningDiv );
           }, false);
