@@ -400,7 +400,7 @@ input.form-error {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 220px;
+  height: 180px;
   border: 1px solid #000;
   background-image: url( "../resources/bg.jpg" );
   -moz-transition: bottom 0.35s;
@@ -647,10 +647,10 @@ input.form-error {
 
 #butter-timeline .track-handle-container {
   position: absolute;
-  height: 145px;
+  height: 105px;
   width: 82px;
   left: 5px;
-  top: 6px;
+  top: 46px;
   bottom: 18px;
   overflow: hidden;
   -moz-box-shadow: 0 1px 0 #737373,inset 0 1px 0 #414141, 0 0 1px #000;
@@ -849,7 +849,7 @@ input.form-error {
 }
 
 #butter-tray[ ui-state="hidden" ] {
-  bottom: -170px;
+  bottom: -130px;
 }
 
 #butter-tray #toggle-button {
@@ -904,7 +904,7 @@ input.form-error {
   background: linear-gradient(top,  rgba(65,68,73,1) 0%,rgba(40,40,40,1) 100%);
   position: absolute;
   height: 50px;
-  top: 0;
+  top: 0px;
   left: 0;
   width: 100%;
   border-bottom: 1px solid #000;
@@ -916,7 +916,7 @@ input.form-error {
 
 #butter-timeline .media-instance {
   height: 190px;
-  padding: 0 115px 0 95px;
+  padding: 40px 115px 0 95px;
   position: relative;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -939,7 +939,7 @@ input.form-error {
   top: 5px;
   padding: 0;
   margin: 0;
-  height: 145px;
+  height: 105px;
 }
 
 #butter-tray .scroll-bar {
@@ -1157,7 +1157,7 @@ input.form-error {
 #work {
   padding: 0 150px 0 0;
   position: relative;
-  height: 160px;
+  height: 120px;
   top: 50px;
 }
 
@@ -1256,7 +1256,7 @@ input.form-error {
   -webkit-box-shadow: 0 1px 0 #656565;
   box-shadow: 0 1px 0 #656565;
   padding: 3px;
-  height: 115px;
+  height: 75px;
   width: 80px;
   position: relative;
 }
@@ -1320,7 +1320,7 @@ input.form-error {
 #butter-tray #butter-plugin .scroll-bar-v {
   right: 3px;
   width: 6px;
-  height: 100px;
+  height: 60px;
   top: 18px;
 }
 
@@ -1343,7 +1343,7 @@ input.form-error {
   display: inline-block;
   padding: 5px 10px 4px;
   height: 100px;
-  margin-top: 100px;
+  margin-top: 0;
   font-size: 62px;
   font-weight: 500;
   line-height: 18px;
