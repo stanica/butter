@@ -40,9 +40,11 @@ define([], function(){
   }
 
   function onDragged( e ){
+    var clientX = e.clientX || e.touches[ 0 ].clientX,
+        clientY = e.clientY || e.touches[ 0 ].clientY;
     __mouseLast[ 0 ] = __mousePos[ 0 ];
     __mouseLast[ 1 ] = __mousePos[ 1 ];
-    __mousePos = [ e.clientX, e.clientY ];
+    __mousePos = [ clientX, clientY ];
 
     var remembers = [],
         droppable,
@@ -81,8 +83,9 @@ define([], function(){
   }
 
   function onMouseUp( e ){
+    console.log( "MOUSE UP DRAG" );
     __mouseDown = false;
-    window.removeEventListener( "mousemove", onDragged, false );
+    window.removeEventListener( "touchmove", onDragged, false );
 
     var selectedDraggable;
 
@@ -95,12 +98,14 @@ define([], function(){
   }
 
   function onMouseDown( e ){
-    if( e.which !== 1 ){
+    console.log( "MOUSE DOWN DRAG" );
+    if( e.which !== 1 && e.which > 0 ){
       return;
     }
     e.preventDefault();
     e.stopPropagation();
-    window.addEventListener( "mousemove", onDragged, false );
+    window.addEventListener( "touchend", onMouseUp, false );
+    window.addEventListener( "touchmove", onDragged, false );
     window.addEventListener( "mouseup", onMouseUp, false );
   }
 
@@ -196,10 +201,12 @@ define([], function(){
     function onLeftMouseDown( e ){
       e.stopPropagation();
 
-      var originalRect = element.getBoundingClientRect(),
+      var clientX = e.clientX || e.touches[ 0 ].clientX,
+          clientY = e.clientY || e.touches[ 0 ].clientY,
+          originalRect = element.getBoundingClientRect(),
           originalPosition = element.offsetLeft,
           originalWidth = element.offsetWidth,
-          mouseDownPosition = e.clientX,
+          mouseDownPosition = clientX,
           mousePosition,
           mouseOffset;
 
@@ -233,7 +240,9 @@ define([], function(){
       }
 
       function onMouseUp( e ){
-        window.removeEventListener( "mousemove", onMouseMove, false );
+        console.log( "MOUSE UP RESIZE" );
+        window.removeEventListener( "touchend", onMouseUp, false );
+        window.removeEventListener( "touchmove", onMouseMove, false );
         window.removeEventListener( "mouseup", onMouseUp, false );
         clearInterval( _updateInterval );
         _updateInterval = -1;
@@ -241,7 +250,10 @@ define([], function(){
       }
 
       function onMouseMove( e ){
-        mousePosition = e.clientX;
+        console.log( "MOVING RESIZE left" );
+        var clientX = e.clientX || e.touches[ 0 ].clientX,
+            clientY = e.clientY || e.touches[ 0 ].clientY;
+        mousePosition = clientX;
         if( _updateInterval === -1 ){
           _updateInterval = setInterval( update, SCROLL_INTERVAL );
           _onStart();
@@ -249,19 +261,23 @@ define([], function(){
       }
 
       _elementRect = element.getBoundingClientRect();
-      mouseOffset = e.clientX - _elementRect.left;
+      mouseOffset = clientX - _elementRect.left;
       _scrollRect = _scroll.getBoundingClientRect();
 
-      window.addEventListener( "mousemove", onMouseMove, false );
+      window.addEventListener( "touchend", onMouseUp, false );
+      window.addEventListener( "touchmove", onMouseMove, false );
       window.addEventListener( "mouseup", onMouseUp, false );
     }
 
     function onRightMouseDown( e ){
+      console.log( "RIGHT MOUSE DOWN" );
+      var clientX = e.clientX || e.touches[ 0 ].clientX,
+          clientY = e.clientY || e.touches[ 0 ].clientY;
       e.stopPropagation();
 
       var originalPosition = element.offsetLeft,
           originalWidth = element.offsetWidth,
-          mouseDownPosition = e.clientX,
+          mouseDownPosition = clientX,
           mousePosition,
           mouseOffset;
 
@@ -289,7 +305,8 @@ define([], function(){
       }
 
       function onMouseUp( e ){
-        window.removeEventListener( "mousemove", onMouseMove, false );
+        window.removeEventListener( "touchend", onMouseUp, false );
+        window.removeEventListener( "touchmove", onMouseMove, false );
         window.removeEventListener( "mouseup", onMouseUp, false );
         clearInterval( _updateInterval );
         _updateInterval = -1;
@@ -297,7 +314,10 @@ define([], function(){
       }
 
       function onMouseMove( e ){
-        mousePosition = e.clientX;
+        console.log( "MOVING resize right" );
+        var clientX = e.clientX || e.touches[ 0 ].clientX,
+            clientY = e.clientY || e.touches[ 0 ].clientY;
+        mousePosition = clientX;
         if( _updateInterval === -1 ){
           _updateInterval = setInterval( update, SCROLL_INTERVAL );
           _onStart();
@@ -308,17 +328,22 @@ define([], function(){
       if( _scroll ){
         _scrollRect = _scroll.getBoundingClientRect();
       }
-      mouseOffset = e.clientX - _elementRect.left;
+      mouseOffset = clientX - _elementRect.left;
 
-      window.addEventListener( "mousemove", onMouseMove, false );
+      window.addEventListener( "touchend", onMouseUp, false );
+      window.addEventListener( "touchmove", onMouseMove, false );
       window.addEventListener( "mouseup", onMouseUp, false );
     }
 
+    _leftHandle.addEventListener( "touchstart", onLeftMouseDown, false );
+    _rightHandle.addEventListener( "touchstart", onRightMouseDown, false );
     _leftHandle.addEventListener( "mousedown", onLeftMouseDown, false );
     _rightHandle.addEventListener( "mousedown", onRightMouseDown, false );
 
     return {
       destroy: function(){
+        _leftHandle.removeEventListener( "touchstart", onLeftMouseDown, false );
+        _rightHandle.removeEventListener( "touchstart", onRightMouseDown, false );
         _leftHandle.removeEventListener( "mousedown", onLeftMouseDown, false );
         _rightHandle.removeEventListener( "mousedown", onRightMouseDown, false );
         element.removeChild( _leftHandle );
@@ -371,6 +396,8 @@ define([], function(){
     function onDrop( e ) {
       e.preventDefault();
       e.stopPropagation();
+      var clientX = e.clientX || e.touches[ 0 ].clientX,
+          clientY = e.clientY || e.touches[ 0 ].clientY;
 
       if( _hoverClass ){
         element.classList.remove( _hoverClass );
@@ -378,7 +405,7 @@ define([], function(){
       var transferData = e.dataTransfer.getData( "text" ),
           helper = __helpers[ transferData ] || __currentDraggingElement;
       if( helper ){
-        _onDrop( helper, [ e.clientX, e.clientY ] );
+        _onDrop( helper, [ clientX, clientY ] );
       }
     }
 
@@ -389,24 +416,28 @@ define([], function(){
     }
 
     function onDragEnter( e ) {
+      var clientX = e.clientX || e.touches[ 0 ].clientX,
+          clientY = e.clientY || e.touches[ 0 ].clientY;
       if( _hoverClass ) {
         element.classList.add( _hoverClass );
       }
       var transferData = e.dataTransfer.getData( "text" ),
           helper = __helpers[ transferData ] || __currentDraggingElement;
       if( helper ){
-        _onOver( helper, [ e.clientX, e.clientY ] );
+        _onOver( helper, [ clientX, clientY ] );
       }
     }
 
     function onDragLeave( e ) {
+      var clientX = e.clientX || e.touches[ 0 ].clientX,
+          clientY = e.clientY || e.touches[ 0 ].clientY;
       if ( _hoverClass ) {
         element.classList.remove( _hoverClass );
       }
       var transferData = e.dataTransfer.getData( "text" ),
           helper = __helpers[ transferData ] || __currentDraggingElement;
       if( helper ){
-        _onOut( helper, [ e.clientX, e.clientY ] );
+        _onOut( helper, [ clientX, clientY ] );
       }
     }
 
@@ -507,6 +538,7 @@ define([], function(){
         _droppable = null,
         _draggable = {
           destroy: function(){
+            element.removeEventListener( "touchstart", onMouseDown, false );
             element.removeEventListener( "mousedown", onMouseDown, false );
           }
         },
@@ -593,6 +625,7 @@ define([], function(){
       _elementRect = element.getBoundingClientRect();
     }
 
+    element.addEventListener( "touchstart", onMouseDown, false );
     element.addEventListener( "mousedown", onMouseDown, false );
 
     _draggable.update = function(){
@@ -605,10 +638,12 @@ define([], function(){
     };
 
     _draggable.start = function( e ){
+      var clientX = e.clientX || e.touches[ 0 ].clientX,
+          clientY = e.clientY || e.touches[ 0 ].clientY;
       _dragging = true;
       _originalPosition = [ element.offsetLeft, element.offsetTop ];
       _draggable.updateRects();
-      _mouseOffset = [ e.clientX - _elementRect.left, e.clientY - _elementRect.top ];
+      _mouseOffset = [ clientX - _elementRect.left, clientY - _elementRect.top ];
       _onStart();
     };
 
@@ -702,6 +737,7 @@ define([], function(){
     }
 
     function onElementMouseMove( e ){
+      console.log( "ELEM MOUSE MOVE" );
       if( !_moved ){
         _moved = true;
         _placeHolder = createPlaceholder( _draggingElement );
@@ -711,7 +747,9 @@ define([], function(){
         positionElement( 0 );
       }
       else{
-        var diff = _mouseDownPosition - e.clientY;
+      var clientX = e.clientX || e.touches[ 0 ].clientX,
+          clientY = e.clientY || e.touches[ 0 ].clientY;
+        var diff = _mouseDownPosition - clientY;
         positionElement( diff );
         var dragElementRect = _draggingElement.getBoundingClientRect();
         for( var i=_elements.length - 1; i>=0; --i ){
@@ -759,9 +797,12 @@ define([], function(){
     }
 
     function onElementMouseDown( e ){
-      if( e.which !== 1 ){
+      console.log( "MOUSEDOWN ELEM" );
+      if( e.which !== 1 && e.which > 0 ){
         return;
       }
+      var clientX = e.clientX || e.touches[ 0 ].clientX,
+          clientY = e.clientY || e.touches[ 0 ].clientY;
       _moved = false;
       _draggingElement = e.target;
       _draggingOriginalPosition = _draggingElement.offsetTop;
@@ -769,16 +810,19 @@ define([], function(){
       var style = getComputedStyle( _draggingElement );
 
       _oldZIndex = style.getPropertyValue( "z-index" );
-      _mouseDownPosition = e.clientY;
+      _mouseDownPosition = clientY;
 
+      window.addEventListener( "touchend", onElementMouseUp, false );
+      window.addEventListener( "touchmove", onElementMouseMove, false );
       window.addEventListener( "mouseup", onElementMouseUp, false );
-      window.addEventListener( "mousemove", onElementMouseMove, false );
     }
 
     function onElementMouseUp( e ){
+      console.log( "ELEM MOUSE UP" );
       _draggingElement.style.zIndex = _oldZIndex;
+      window.removeEventListener( "touchend", onElementMouseUp, false );
+      window.removeEventListener( "touchmove", onElementMouseMove, false );
       window.removeEventListener( "mouseup", onElementMouseUp, false );
-      window.removeEventListener( "mousemove", onElementMouseMove, false );
       _moved = false;
       if( _placeHolder ){
         _draggingElement.style.zIndex = "";
@@ -791,11 +835,13 @@ define([], function(){
 
     _instance.addItem = function( item ){
       _elements.push( item );
+      item.addEventListener( "touchstart", onElementMouseDown, false );
       item.addEventListener( "mousedown", onElementMouseDown, false );
     };
 
     _instance.removeItem = function( item ){
       _elements.splice( _elements.indexOf( item ), 1 );
+      item.removeEventListener( "touchstart", onElementMouseDown, false );
       item.removeEventListener( "mousedown", onElementMouseDown, false );
     };
 

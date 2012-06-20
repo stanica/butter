@@ -201,12 +201,24 @@ define( [ "core/logger", "core/eventmanager", "util/dragndrop" ], function( Logg
     _element.id = _id;
     _this.update( inputOptions );
 
-    _element.addEventListener( "mousedown", function ( e ) {
+    function dispatchMouseDown( e ) {
       _this.dispatch( "trackeventmousedown", { originalEvent: e, trackEvent: trackEvent } );
-    }, true);
-    _element.addEventListener( "mouseup", function ( e ) {
+    }
+    function dispatchMouseUp( e ) {
       _this.dispatch( "trackeventmouseup", { originalEvent: e, trackEvent: trackEvent } );
-    }, false);
+    }
+
+    // prevent default on these so the window doesn't try and scroll when trying to move a trackevent
+    _element.addEventListener( "touchstart", function( e ) {
+      e.preventDefault();
+      dispatchMouseDown( e );
+    }, false );
+    _element.addEventListener( "touchend", function( e ) {
+      e.preventDefault();
+      dispatchMouseUp( e );
+    }, false );
+    _element.addEventListener( "mousedown", dispatchMouseDown, false );
+    _element.addEventListener( "mouseup", dispatchMouseUp, false );
     _element.addEventListener( "mouseover", function ( e ) {
       _this.dispatch( "trackeventmouseover", { originalEvent: e, trackEvent: trackEvent } );
     }, false );
