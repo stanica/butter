@@ -21,7 +21,7 @@ console.log( "Publish Dir:", PUBLISH_DIR );
 
 var mongoose = require('mongoose'),
 
-    db = mongoose.connect('mongodb://142.204.133.46/test', function( err ) {
+    db = mongoose.connect('mongodb://142.204.133.43/test', function( err ) {
 
       if ( err ) {
         console.error( "MongoDB: " + err + "\n  You will not be able to store any data." );

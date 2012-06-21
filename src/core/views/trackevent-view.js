@@ -11,6 +11,7 @@ define( [ "core/logger", "core/eventmanager", "util/dragndrop" ], function( Logg
     var _id = "TrackEventView" + __guid++,
         _element = document.createElement( "div" ),
         _zoom = 1,
+        _previousScale = 0,
         _type = type,
         _start = inputOptions.start || 0,
         _end = inputOptions.end || _start + 1,
@@ -184,11 +185,11 @@ define( [ "core/logger", "core/eventmanager", "util/dragndrop" ], function( Logg
       }
     });
 
-    function movedCallback() {
+    function movedCallback( scale, shrinking ) {
       _element.style.top = "0px";
       var rect = _element.getClientRects()[ 0 ];
-      _start = _element.offsetLeft / _zoom;
-      _end = _start + rect.width / _zoom;
+      _start = ( _element.offsetLeft / _zoom );
+      _end = ( _start + rect.width / _zoom ) + ( ( scale || 0 ) / ( shrinking ? 2 : 5 ) );
       _trackEvent.update({
         start: _start,
         end: _end
@@ -226,6 +227,20 @@ define( [ "core/logger", "core/eventmanager", "util/dragndrop" ], function( Logg
       _this.dispatch( "trackeventmouseout", { originalEvent: e, trackEvent: trackEvent } );
     }, false );
 
+    function dblClick( e ) {
+      function realDouble( e ) {
+        _this.dispatch( "trackeventdoubleclicked", { originalEvent: e.originalEvent, trackEvent: trackEvent } );
+      }
+      _element.removeEventListener( "touchstart", dblClick, false );
+      _element.removeEventListener( "touchstart", dblClick, false );
+      _element.addEventListener( "touchstart", realDouble, false );
+      setTimeout(function() {
+        _element.removeEventListener( "touchstart", realDouble, false );
+        _element.addEventListener( "touchstart", dblClick, false );
+      }, 500);
+    }
+
+    _element.addEventListener( "touchstart", dblClick, false);
     _element.addEventListener( "dblclick", function ( e ) {
       _this.dispatch( "trackeventdoubleclicked", { originalEvent: e, trackEvent: trackEvent } );
     }, false);
@@ -240,6 +255,12 @@ define( [ "core/logger", "core/eventmanager", "util/dragndrop" ], function( Logg
       _element.removeAttribute( "selected" );
     } //deselect
 
+    _element.addEventListener( "gesturechange", function( e ) {
+      movedCallback( e.scale - _previousScale, !( ( e.scale - _previousScale ) > 0 ) );
+      console.log( e.scale - _previousScale );
+      _previousScale = e.scale;
+      resetContainer();
+    }, false);
   };
 
 });

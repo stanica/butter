@@ -8,7 +8,7 @@ define([], function(){
     _button.classList.add( "butter-btn" );
     _button.innerHTML = "<span class=\"icon icon-plus-sign\"></span> Popcorn";
 
-    _button.addEventListener( "click", function(){
+    function click(){
       if( butter.ui.contentState === "timeline" ){
         butter.ui.setContentState( "add-popcorn" );
         butter.ui.contentStateLocked = true;
@@ -17,7 +17,13 @@ define([], function(){
         butter.ui.contentStateLocked = false;
         butter.ui.setContentState( "timeline" );
       }
-    }, false );
+      _button.removeEventListener( "touchstart", click, false );
+      /*setTimeout(function() {
+      _button.removeEventListener( "touchstart", click, false );
+      }, 300);*/
+    }
+    _button.addEventListener( "touchstart", click, false );
+    _button.addEventListener( "click", click, false );
 
     butter.ui.areas.tools.addComponent( _button, {
       states: [ "add-popcorn", "editor" ],

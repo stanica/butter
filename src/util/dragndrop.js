@@ -40,6 +40,7 @@ define([], function(){
   }
 
   function onDragged( e ){
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
     var clientX = e.clientX || e.touches[ 0 ].clientX,
         clientY = e.clientY || e.touches[ 0 ].clientY;
     __mouseLast[ 0 ] = __mousePos[ 0 ];
@@ -83,7 +84,7 @@ define([], function(){
   }
 
   function onMouseUp( e ){
-    console.log( "MOUSE UP DRAG" );
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
     __mouseDown = false;
     window.removeEventListener( "touchmove", onDragged, false );
 
@@ -98,11 +99,10 @@ define([], function(){
   }
 
   function onMouseDown( e ){
-    console.log( "MOUSE DOWN DRAG" );
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
     if( e.which !== 1 && e.which > 0 ){
       return;
     }
-    e.preventDefault();
     e.stopPropagation();
     window.addEventListener( "touchend", onMouseUp, false );
     window.addEventListener( "touchmove", onDragged, false );
@@ -199,7 +199,8 @@ define([], function(){
     element.appendChild( _rightHandle );
 
     function onLeftMouseDown( e ){
-      e.stopPropagation();
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
+    e.stopPropagation();
 
       var clientX = e.clientX || e.touches[ 0 ].clientX,
           clientY = e.clientY || e.touches[ 0 ].clientY,
@@ -240,7 +241,7 @@ define([], function(){
       }
 
       function onMouseUp( e ){
-        console.log( "MOUSE UP RESIZE" );
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
         window.removeEventListener( "touchend", onMouseUp, false );
         window.removeEventListener( "touchmove", onMouseMove, false );
         window.removeEventListener( "mouseup", onMouseUp, false );
@@ -250,7 +251,7 @@ define([], function(){
       }
 
       function onMouseMove( e ){
-        console.log( "MOVING RESIZE left" );
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
         var clientX = e.clientX || e.touches[ 0 ].clientX,
             clientY = e.clientY || e.touches[ 0 ].clientY;
         mousePosition = clientX;
@@ -270,7 +271,7 @@ define([], function(){
     }
 
     function onRightMouseDown( e ){
-      console.log( "RIGHT MOUSE DOWN" );
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
       var clientX = e.clientX || e.touches[ 0 ].clientX,
           clientY = e.clientY || e.touches[ 0 ].clientY;
       e.stopPropagation();
@@ -305,6 +306,7 @@ define([], function(){
       }
 
       function onMouseUp( e ){
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
         window.removeEventListener( "touchend", onMouseUp, false );
         window.removeEventListener( "touchmove", onMouseMove, false );
         window.removeEventListener( "mouseup", onMouseUp, false );
@@ -314,7 +316,7 @@ define([], function(){
       }
 
       function onMouseMove( e ){
-        console.log( "MOVING resize right" );
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
         var clientX = e.clientX || e.touches[ 0 ].clientX,
             clientY = e.clientY || e.touches[ 0 ].clientY;
         mousePosition = clientX;
@@ -394,7 +396,7 @@ define([], function(){
         _draggedCount = 0;
 
     function onDrop( e ) {
-      e.preventDefault();
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
       e.stopPropagation();
       var clientX = e.clientX || e.touches[ 0 ].clientX,
           clientY = e.clientY || e.touches[ 0 ].clientY;
@@ -638,6 +640,7 @@ define([], function(){
     };
 
     _draggable.start = function( e ){
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
       var clientX = e.clientX || e.touches[ 0 ].clientX,
           clientY = e.clientY || e.touches[ 0 ].clientY;
       _dragging = true;
@@ -737,7 +740,7 @@ define([], function(){
     }
 
     function onElementMouseMove( e ){
-      console.log( "ELEM MOUSE MOVE" );
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
       if( !_moved ){
         _moved = true;
         _placeHolder = createPlaceholder( _draggingElement );
@@ -797,7 +800,7 @@ define([], function(){
     }
 
     function onElementMouseDown( e ){
-      console.log( "MOUSEDOWN ELEM" );
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
       if( e.which !== 1 && e.which > 0 ){
         return;
       }
@@ -818,7 +821,7 @@ define([], function(){
     }
 
     function onElementMouseUp( e ){
-      console.log( "ELEM MOUSE UP" );
+    e.preventDefault ? e.preventDefault() : e.originalEvent.preventDefault();
       _draggingElement.style.zIndex = _oldZIndex;
       window.removeEventListener( "touchend", onElementMouseUp, false );
       window.removeEventListener( "touchmove", onElementMouseMove, false );
