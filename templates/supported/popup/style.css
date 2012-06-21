@@ -22,8 +22,8 @@ video {
 #video-container {
   position: relative;
   margin: 1em auto;
-  width: 768px;
-  height: 432px;
+  width: 568px;
+  height: 232px;
 }
 
 #video, #video iframe {

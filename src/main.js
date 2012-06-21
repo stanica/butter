@@ -788,11 +788,16 @@
         });
         if ( __showUI ) {
           uaWarningDiv.getElementsByClassName("butter-btn-ipad")[ 0 ].addEventListener( "click", function() {
-          console.log("Button touched");
             __mediaObj.play();
             __mediaObj.pause();
             // do show UI shit here
+             uaWarningDiv.className = "butter-ua-warning-slide";
+             uaWarningDiv.getElementsByClassName("butter-ua-warning-text")[ 0 ].className = "butter-ua-warning-text-fade";
+             uaWarningDiv.getElementsByClassName("butter-btn-ipad")[ 0 ].className = "butter-btn-ipad-fade";
+            setTimeout(function () {
             document.body.removeChild( uaWarningDiv );
+            }, 1500);
+           
           }, false);
         }
 
