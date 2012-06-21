@@ -64,6 +64,7 @@ define( [ "util/dragndrop" ], function( DragNDrop ){
       element.setAttribute( "data-butter-draggable-type", "plugin" );
       
       _containerElement.appendChild( element );
+      
     });
 
     _parentElement.style.display = "none";

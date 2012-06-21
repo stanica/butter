@@ -119,8 +119,10 @@ define( [
               events: {
                 open: function( e ){
                   dialog.send( "url", url );
+                  document.getElementById( "video" ).style.display = "none";
                 },
                 cancel: function( e ){
+                  document.getElementById( "video" ).style.display = "";
                   dialog.close();
                 }
               }
@@ -171,9 +173,11 @@ define( [
           events: {
             open: function( e ){
               dialog.send( "name", null );
+              document.getElementById( "video" ).style.display = "none";
             },
             submit: function( e ){
               butter.project.name = e.data;
+              document.getElementById( "video" ).style.display = "";
               dialog.close();
               execute();
             },

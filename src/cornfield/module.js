@@ -164,6 +164,7 @@ define(['util/xhr'], function(XHR) {
             var response = JSON.parse(this.response);
             callback(response);
           } catch (err) {
+            console.log( err );
             callback({ error: "an unknown error occured" });
           }
         }
@@ -180,9 +181,11 @@ define(['util/xhr'], function(XHR) {
       XHR.post( url, data, function() {
         if (this.readyState === 4) {
           try {
+            console.log( this.response );
             var response = JSON.parse(this.response);
             callback(response);
           } catch (err) {
+            console.log( err );
             callback({ error: "an unknown error occured" });
           }
         }

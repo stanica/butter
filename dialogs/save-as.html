@@ -29,6 +29,7 @@
           Dialog.enableElements( "save" );
           nameInput.value = e.data || "";
         });
+
       });
     </script>
     <script type="text/javascript" src="../src/dialog/dialog-comm.js"></script>
@@ -47,7 +48,7 @@
     <h1>Please give your project a<span id="better"> better</span> name:</h1>
     <div id="container" class="hbox center">
       <div id="content" class="vbox center">
-        <input type="text" id="name-input" />
+        <input contenteditable="true" type="text" id="name-input" />
       </div>
     </div>
     <div id="buttons" class="hbox center">

@@ -122,7 +122,8 @@
           }
 
           plugin = new Plugin( _plugins.length, plugin );
-
+          console.log( plugin, plugin.element );
+          
           var interval = setInterval(function( e ) {
             if( !Popcorn.manifest[ plugin.type ]) {
               return;
@@ -136,7 +137,24 @@
 
           _plugins.push( plugin );
           if( moduleOptions.defaults && moduleOptions.defaults.indexOf( plugin.type ) > -1 ){
-            _listContainer.appendChild( plugin.createElement( butter, _pattern ) );
+            var elem = plugin.createElement( butter, _pattern );
+            elem.addEventListener( "click", function() {
+              console.log( butter.currentMedia.currentTime );
+            var te = butter.tracks[ 0 ].addTrackEvent({ 
+              type: plugin.type,
+              popcornOptions: {
+                start: butter.currentMedia.currentTime,
+                end: butter.currentMedia.currentTime + 1,
+                "target": "pop-container",
+                "icon": "images/heart.png",
+                "left": "50",
+                "top": "50",
+                "text": "iPad Popcorn Maker!"
+              }
+          });
+        te.update();
+      }, false);
+            _listContainer.appendChild( elem );
           }
           butter.dispatch( "pluginadded", plugin );
         }
