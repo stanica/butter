@@ -8,7 +8,7 @@
       DEFAULT_TRACKEVENT_OFFSET = 0.01;
 
   var ACCEPTED_UA_LIST = {
-    
+    "Chrome": 17,
     "Firefox": 10
   };
 
