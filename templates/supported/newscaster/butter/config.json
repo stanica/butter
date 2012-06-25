@@ -3,10 +3,11 @@
   "title": "Newscaster",
   "template": "../index.html",
   "baseDir": "../../../",
+  "savedDataUrl": "butter/saved-data.json",
   "editor": {
     "default": "{{baseDir}}editors/default-editor.html",
     "photo": "{{baseDir}}templates/supported/shared/editors/photo-editor.html",
-    "googlemaps": "{{baseDir}}editors/googlemap-editor.html"
+    "googlemap": "{{baseDir}}editors/googlemap-editor.html"
   },
   "plugin": {
     "plugins": [
@@ -15,20 +16,12 @@
         "path": "{{baseDir}}external/popcorn-js/plugins/text/popcorn.text.js"
       },
       {
-        "type": "shrink",
-        "path": "{{baseDir}}templates/supported/shared/plugins/shrink/popcorn.shrink.js"
-      },
-      {
         "type": "titlecard",
         "path": "{{baseDir}}templates/supported/shared/plugins/titlecard/popcorn.titlecard.js"
       },
       {
         "type": "photo",
         "path": "{{baseDir}}templates/supported/shared/plugins/photo/popcorn.photo.js"
-      },
-      {
-        "type": "mediaspawner",
-        "path": "{{baseDir}}external/popcorn-js/plugins/mediaspawner/popcorn.mediaspawner.js"
       },
       {
         "type": "zoink",
@@ -47,8 +40,6 @@
       "text",
       "titlecard",
       "photo",
-      "shrink",
-      "mediaspawner",
       "zoink",
       "shrink",
       "flickr",

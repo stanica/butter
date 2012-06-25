@@ -3,12 +3,22 @@
     {
       "id": "Target0",
       "name": "Target0",
-      "element": "Area1"
+      "element": "Box1"
     },
     {
       "id": "Target1",
       "name": "Target1",
-      "element": "Area2"
+      "element": "Box2"
+    },
+    {
+      "id": "Target2",
+      "name": "Target2",
+      "element": "Box3"
+    },
+    {
+      "id": "Target3",
+      "name": "Target3",
+      "element": "Box4"
     }
   ],
   "media": [
@@ -16,11 +26,13 @@
       "id": "Media0",
       "name": "Media0",
       "url": [
-        "../external/popcorn-js/test/trailer.mp4",
-        "../external/popcorn-js/test/trailer.webm"
+        "http://videos-cdn.mozilla.net/serv/webmademovies/trailer.mp4",
+        "http://videos-cdn.mozilla.net/serv/webmademovies/trailer.ogv",
+        "http://videos-cdn.mozilla.net/serv/webmademovies/trailer.webm"
       ],
-      "target": "main",
-      "duration": 64.54166412353516,
+      "target": "videobox",
+      "duration": 64.522791,
+      "controls": true,
       "tracks": [
         {
           "name": "Track0",
@@ -33,7 +45,9 @@
                 "start": 0,
                 "end": 3,
                 "text": "test",
-                "target": "Area1"
+                "target": "Box1",
+                "escape": "",
+                "multiline": ""
               },
               "track": "Track0",
               "name": "TrackEvent0"
@@ -55,7 +69,10 @@
               "popcornOptions": {
                 "start": 1,
                 "end": 2,
-                "target": "Area2"
+                "target": "Box2",
+                "text": "Popcorn.js",
+                "escape": "",
+                "multiline": ""
               },
               "track": "Track2",
               "name": "TrackEvent1"

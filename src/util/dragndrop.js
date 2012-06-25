@@ -807,7 +807,7 @@ define([], function(){
       var clientX = e.clientX || e.touches[ 0 ].clientX,
           clientY = e.clientY || e.touches[ 0 ].clientY;
       _moved = false;
-      _draggingElement = e.target;
+      _draggingElement = this;
       _draggingOriginalPosition = _draggingElement.offsetTop;
 
       var style = getComputedStyle( _draggingElement );

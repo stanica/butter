@@ -1,7 +1,9 @@
 {
   "name": "simple",
   "title": "Simple",
+  "template": "../index.html",
   "baseDir": "../../../",
+  "savedDataUrl": "butter/saved-data.json",
   "plugin": {
     "plugins": [
       {
@@ -24,9 +26,8 @@
     "defaults": [
       "text",
       "googlemap",
-      "image",
-      "twitter"
+      "image"
     ]
-  
+
   }
 }

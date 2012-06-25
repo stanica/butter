@@ -14,6 +14,23 @@ const express = require('express'),
       VALID_TEMPLATES = CONFIG.templates,
       EXPORT_ASSETS = CONFIG.exportAssets;
 
+var templateConfigs = {};
+
+function readTemplateConfig( templateName, templatedPath ) {
+  var configPath = templatedPath.replace( '{{templateBase}}', TEMPLATES_DIR + '/' );
+  fs.readFile( configPath, 'utf8', function( err, conf ) {
+    var configPathBase = configPath.substring( 0, configPath.lastIndexOf( '/' ) );
+    conf = JSON.parse( conf );
+    conf.template = configPathBase + '/' + conf.template;
+    templateConfigs[ templateName ] = conf;
+  });
+}
+
+// parse configs ahead of any action that has to happen with them
+for ( var templateName in VALID_TEMPLATES ) {
+  readTemplateConfig( templateName, VALID_TEMPLATES[ templateName ] );
+}
+
 var canStoreData = true;
 
 console.log( "Templates Dir:", TEMPLATES_DIR );
@@ -51,16 +68,30 @@ if ( !path.existsSync( PUBLISH_DIR ) ) {
   fs.mkdirSync( PUBLISH_DIR );
 }
 
-app.use(express.logger(CONFIG.logger))
-  .use(express.bodyParser())
-  .use(express.cookieParser())
-  .use( express.session( CONFIG.session ) )
-  .use(stylus.middleware({
-    src: WWW_ROOT
-  }))
-  .use(express.static( WWW_ROOT ))
-  .use(express.static( PUBLISH_DIR ))
-  .use(express.directory( WWW_ROOT, { icons: true } ) );
+app.configure( function() {
+  app.use( express.logger( CONFIG.logger ) )
+    .use( express.static( WWW_ROOT, JSON.parse( JSON.stringify( CONFIG.staticMiddleware ) ) ) )
+    .use( express.static( PUBLISH_DIR, JSON.parse( JSON.stringify( CONFIG.staticMiddleware ) ) ) )
+    .use( express.bodyParser() )
+    .use( express.cookieParser() )
+    .use( express.session( CONFIG.session ) )
+    .use( stylus.middleware({
+      src: WWW_ROOT
+    }))
+    /* Show Zeus who's boss
+     * This only affects requests under /api and /browserid, not static files
+     * because the static file writes the response header before we hit this middleware
+     */
+    .use( function( req, res, next ) {
+      res.header( 'Cache-Control', 'no-store' );
+      return next();
+    })
+    .set('view options', {layout: false});
+});
+
+app.configure( 'development', function() {
+  app.use( express.directory( WWW_ROOT, { icons: true } ) );
+});
 
 require('express-browserid').plugAll(app);
 
@@ -106,101 +137,107 @@ function publishRoute( req, res ){
         var projectPath = PUBLISH_DIR + "/" + id + ".html",
             url = PUBLISH_PREFIX + "/" + id + ".html",
             projectData = JSON.parse( project.data ),
-            templateBase = VALID_TEMPLATES[ template ].replace( '{{templateBase}}', TEMPLATES_DIR + '/' );
+            templateBase = VALID_TEMPLATES[ template ].replace( '{{templateBase}}', TEMPLATES_DIR + '/' ),
+            templateConfig = templateConfigs[ template ],
+            templateFile = templateConfig.template;
 
-        fs.readFile( templateBase, 'utf8', function(err, conf){
-          var templateConfig = JSON.parse( conf ),
-              templateFile = path.resolve( templateBase, '..', templateConfig.template );
+        fs.readFile( templateFile, 'utf8', function( err, data ){
 
-          fs.readFile( templateFile, 'utf8', function( err, data ){
-            var headEndTagIndex,
-                bodyEndTagIndex,
-                externalAssetsString = '',
-                popcornString = '',
-                currentMedia,
-                currentTrack,
-                currentTrackEvent,
-                mediaPopcornOptions,
-                templateURL,
-                baseString,
-                headStartTagIndex,
-                templateScripts,
-                startString,
-                j, k;
+          if ( err ) {
+            res.json( { error: 'error reading template file' }, 500 );
+            return;
+          }
 
-            templateURL = templateFile.substring( templateFile.indexOf( '/templates' ), templateFile.lastIndexOf( '/' ) );
-            baseString = '\n  <base href="' + PUBLISH_PREFIX + templateURL + '/"/>';
+          var headEndTagIndex,
+              bodyEndTagIndex,
+              externalAssetsString = '',
+              popcornString = '',
+              currentMedia,
+              currentTrack,
+              currentTrackEvent,
+              mediaPopcornOptions,
+              templateURL,
+              baseString,
+              headStartTagIndex,
+              templateScripts,
+              startString,
+              j, k;
 
-            // look for script tags with data-butter-exclude in particular (e.g. butter's js script)
-            data = data.replace( /\s*<script[\.\/='":_-\w\s]*data-butter-exclude[\.\/='":_-\w\s]*><\/script>/g, '' );
+          templateURL = templateFile.substring( templateFile.indexOf( '/templates' ), templateFile.lastIndexOf( '/' ) );
+          baseString = '\n  <base href="' + PUBLISH_PREFIX + templateURL + '/"/>';
 
-            // Adding 6 to cut out the actual head tag
-            headStartTagIndex = data.indexOf( '<head>' ) + 6;
-            headEndTagIndex = data.indexOf( '</head>' );
-            bodyEndTagIndex = data.indexOf( '</body>' );
+          // look for script tags with data-butter-exclude in particular (e.g. butter's js script)
+          data = data.replace( /\s*<script[\.\/='":_-\w\s]*data-butter-exclude[\.\/='":_-\w\s]*><\/script>/g, '' );
 
-            templateScripts = data.substring( headStartTagIndex, headEndTagIndex );
-            startString = data.substring( 0, headStartTagIndex );
+          // Adding 6 to cut out the actual head tag
+          headStartTagIndex = data.indexOf( '<head>' ) + 6;
+          headEndTagIndex = data.indexOf( '</head>' );
+          bodyEndTagIndex = data.indexOf( '</body>' );
 
-            for ( i = 0; i < EXPORT_ASSETS.length; ++i ) {
-              externalAssetsString += '\n  <script src="' + path.relative( templateFile, path.resolve( EXPORT_ASSETS[ i ] ) ) + '"></script>\n';
+          templateScripts = data.substring( headStartTagIndex, headEndTagIndex );
+          startString = data.substring( 0, headStartTagIndex );
+
+          for ( i = 0; i < EXPORT_ASSETS.length; ++i ) {
+            externalAssetsString += '\n  <script src="' + path.relative( templateFile, path.resolve( EXPORT_ASSETS[ i ] ) ) + '"></script>\n';
+          }
+
+          // If the template has custom plugins defined in it's config, add them to our exported page
+          if ( templateConfig.plugin && templateConfig.plugin.plugins ) {
+            var plugins = templateConfig.plugin.plugins;
+
+            for ( i = 0, len = plugins.length; i < len; i++ ) {
+              externalAssetsString += '\n  <script src="' + PUBLISH_PREFIX + '/' + plugins[ i ].path.split( '{{baseDir}}' ).pop() + '"></script>';
             }
+            externalAssetsString += '\n';
+          }
 
-            // If the template has custom plugins defined in it's config, add them to our exported page
-            if ( templateConfig.plugin && templateConfig.plugin.plugins ) {
-              var plugins = templateConfig.plugin.plugins;
+          popcornString += '<script>';
 
-              for ( i = 0, len = plugins.length; i < len; i++ ) {
-                externalAssetsString += '\n  <script src="' + PUBLISH_PREFIX + '/' + plugins[ i ].path.split( '{{baseDir}}' ).pop() + '"></script>';
-              }
-              externalAssetsString += '\n';
+          for ( i = 0; i < projectData.media.length; ++i ) {
+            var mediaUrls,
+                mediaUrlsString = '[ "';
+
+            currentMedia = projectData.media[ i ];
+            // We expect a string (one url) or an array of url strings.
+            // Turn a single url into an array of 1 string.
+            mediaUrls = typeof currentMedia.url === "string" ? [ currentMedia.url ] : currentMedia.url;
+            mediaPopcornOptions = currentMedia.popcornOptions || {};
+            numSources = mediaUrls.length;
+
+            for ( k = 0; k < numSources - 1; k++ ) {
+              mediaUrlsString += mediaUrls[ k ] + '" , "';
             }
+            mediaUrlsString += mediaUrls[ numSources - 1 ] + '" ]';
 
-            popcornString += '<script>';
-
-            for ( i = 0; i < projectData.media.length; ++i ) {
-              var mediaUrls,
-                  mediaUrlsString = '[ "';
-
-              currentMedia = projectData.media[ i ];
-              // We expect a string (one url) or an array of url strings.
-              // Turn a single url into an array of 1 string.
-              mediaUrls = typeof currentMedia.url === "string" ? [ currentMedia.url ] : currentMedia.url;
-              mediaPopcornOptions = currentMedia.popcornOptions || {};
-              numSources = mediaUrls.length;
-
-              for ( k = 0; k < numSources - 1; k++ ) {
-                mediaUrlsString += mediaUrls[ k ] + '" , "';
+            popcornString += '\n(function(){';
+            popcornString += '\nvar popcorn = Popcorn.smart("#' + currentMedia.target + '", ' +
+                             mediaUrlsString + ', ' + JSON.stringify( mediaPopcornOptions ) + ');';
+            for ( j = 0; j < currentMedia.tracks.length; ++ j ) {
+              currentTrack = currentMedia.tracks[ j ];
+              for ( k = 0; k < currentTrack.trackEvents.length; ++k ) {
+                currentTrackEvent = currentTrack.trackEvents[ k ];
+                popcornString += '\npopcorn.' + currentTrackEvent.type + '(';
+                popcornString += JSON.stringify( currentTrackEvent.popcornOptions, null, 2 );
+                popcornString += ');';
               }
-              mediaUrlsString += mediaUrls[ numSources - 1 ] + '" ]';
-
-              popcornString += '\n(function(){';
-              popcornString += '\nvar popcorn = Popcorn.smart("#' + currentMedia.target + '", ' +
-                               mediaUrlsString + ', ' + JSON.stringify( mediaPopcornOptions ) + ');';
-              for ( j = 0; j < currentMedia.tracks.length; ++ j ) {
-                currentTrack = currentMedia.tracks[ j ];
-                for ( k = 0; k < currentTrack.trackEvents.length; ++k ) {
-                  currentTrackEvent = currentTrack.trackEvents[ k ];
-                  popcornString += '\npopcorn.' + currentTrackEvent.type + '(';
-                  popcornString += JSON.stringify( currentTrackEvent.popcornOptions, null, 2 );
-                  popcornString += ');';
-                }
-              }
-              popcornString += '}());\n';
             }
-            popcornString += '</script>\n';
+            if ( currentMedia.controls ) {
+              popcornString += "\npopcorn.controls( true );\n";
+            }
+            popcornString += '}());\n';
+          }
+          popcornString += '</script>\n';
 
-            customDataString = '\n<script type="application/butter-custom-data">\n' + customData + '\n</script>';
+          customDataString = '\n<script type="application/butter-custom-data">\n' + customData + '\n</script>';
 
-            data = startString + baseString + templateScripts + externalAssetsString + data.substring( headEndTagIndex, bodyEndTagIndex ) + customDataString + popcornString + data.substring( bodyEndTagIndex );
+          data = startString + baseString + templateScripts + externalAssetsString + data.substring( headEndTagIndex, bodyEndTagIndex ) + customDataString + popcornString + data.substring( bodyEndTagIndex );
 
-            fs.writeFile( projectPath, data, function(){
-              if( err ){
-                res.json({ error: 'internal file error' }, 500);
-                return;
-              }
-              res.json({ error: 'okay', url: url });
-            });
+          fs.writeFile( projectPath, data, function(){
+            if( err ){
+              res.json({ error: 'internal file error' }, 500);
+              return;
+            }
+            res.json({ error: 'okay', url: url });
           });
         });
       }
@@ -219,7 +256,42 @@ function publishRoute( req, res ){
 app.post('/api/publish/:id', publishRoute );
 
 app.get('/dashboard', function(req, res) {
-  res.send('This is just a placeholder', 200);
+  var email = req.session.email;
+
+  if ( !email ) {
+    res.render( 'dashboard-unauthorized.jade' );
+    return;
+  }
+
+  if ( !canStoreData ) {
+    res.json( { error: 'storage service is not running' }, 500 );
+    return;
+  }
+
+  UserModel.findOne( { email: email }, function( err, doc ) {
+    var userProjects = [],
+        project;
+    for ( var i = 0, l = doc.projects.length; i < l; ++i ) {
+      project = doc.projects[ i ];
+      if ( project.template && VALID_TEMPLATES[ project.template ] ) {
+        userProjects.push({
+          // make sure _id is a string. saw some strange double-quotes on output otherwise
+          _id: String(project._id),
+          name: project.name,
+          template: project.template,
+          href: templateConfigs[ project.template ].template + 
+            "?savedDataUrl=" + PUBLISH_PREFIX + "/api/project/" + project._id
+        });
+      }
+    }
+
+    res.render( 'dashboard.jade', { 
+      user: {
+        email: email,
+      },
+      projects: userProjects
+    });
+  });
 });
 
 app.get('/api/projects', function(req, res) {
@@ -282,16 +354,50 @@ app.get('/api/project/:id?', function(req, res) {
   }
 
   UserModel.findOne( { email: email }, function( err, doc ) {
+    var project;
     for( var i=0; i<doc.projects.length; ++i ){
-      if( String( doc.projects[ i ]._id ) === id ){
-        returnVal = { error: "okay", project: doc.projects[ i ].data };
-        res.json( returnVal );
+      project = doc.projects[ i ];
+      if( String( project._id ) === id ){
+        var projectJSON = JSON.parse( project.data );
+        projectJSON.name = project.name;
+        projectJSON.projectID = project._id;
+        res.json( projectJSON );
         return;
       }
     }
     res.json( { error: "project not found" } );
   });
 });
+
+app.get('/api/delete/:id?', function(req, res) {
+  var email = req.session.email,
+      id = req.params.id;
+
+  if (!email) {
+    res.json({ error: 'unauthorized' }, 403);
+    return;
+  }
+
+  if (!canStoreData) {
+    res.json({ error: 'storage service is not running' }, 500);
+    return;
+  }
+
+  UserModel.findOne( { email: email }, function( err, doc ) {
+    var project;
+    for( var i=0; i<doc.projects.length; ++i ){
+      project = doc.projects[ i ];
+      if( String( project._id ) === id ){
+        doc.projects.splice( i, 1 );
+        doc.save();
+        res.json( { error: 'okay' }, 200 );
+        return;
+      }
+    }
+    res.json( { error: 'project not found' }, 404 );
+  });
+});
+
 
 app.post('/api/project/:id?', function( req, res ) {
   var email = req.session.email,
