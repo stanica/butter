@@ -1064,6 +1064,7 @@ iframe {
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
+  -webkit-transform: translateZ(0);
 }
 
 #butter-timeline .tracks-container-wrapper .tracks-container {
@@ -1074,6 +1075,7 @@ iframe {
   outline: none;
   padding-top: 7px;
   padding-bottom: 35px;
+  -webkit-transform: translateZ(0);
 }
 
 #butter-timeline .tracks-container .butter-track-event {
@@ -1084,7 +1086,7 @@ iframe {
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
-  -webkit-transform : translateZ(0);
+  -webkit-transform: translateZ(0);
   border-radius: 5px;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -1115,6 +1117,7 @@ iframe {
   -moz-border-radius: 6px;
   -o-border-radius: 6px;
   -webkit-border-radius: 6px;
+  -webkit-transform: translateZ(0);
   border-radius: 6px;
   background-attachment: scroll;
   background-clip: border-box;
