@@ -122,7 +122,6 @@
           }
 
           plugin = new Plugin( _plugins.length, plugin );
-          console.log( plugin, plugin.element );
           
           var interval = setInterval(function( e ) {
             if( !Popcorn.manifest[ plugin.type ]) {
@@ -139,7 +138,6 @@
           if( moduleOptions.defaults && moduleOptions.defaults.indexOf( plugin.type ) > -1 ){
             var elem = plugin.createElement( butter, _pattern );
             elem.addEventListener( "click", function() {
-              console.log( butter.currentMedia.currentTime );
             var te = butter.tracks[ 0 ].addTrackEvent({ 
               type: plugin.type,
               popcornOptions: {

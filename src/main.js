@@ -760,44 +760,45 @@
 
         _page = new Page( loader, _config );
 
-        function loadUI( hideUI ) {
-          // somehwhere in here you need to call hideUI
-          // the code will be
-          // hideUI && hideUI()
-          _this.ui = new UI( _this  );
+        _this.ui = new UI( _this  );
 
-          _this.ui.load(function(){
-            //prepare the page next
-            preparePopcornScriptsAndCallbacks(function(){
-              preparePage(function(){
-                moduleCollection.ready(function(){
-                  if( _config.value( "snapshotHTMLOnReady" ) ){
-                    _page.snapshotHTML();
-                  }
-                  attemptDataLoad(function(){
-                    //fire the ready event
-                    _this.dispatch( "ready", _this );
-                  });
+        _this.ui.load(function(){
+          //prepare the page next
+          preparePopcornScriptsAndCallbacks(function(){
+            preparePage(function(){
+              moduleCollection.ready(function(){
+                if( _config.value( "snapshotHTMLOnReady" ) ){
+                  _page.snapshotHTML();
+                }
+                attemptDataLoad(function(){
+                  //fire the ready event
+                  _this.dispatch( "ready", _this );
                 });
               });
             });
           });
-        }
-
-        loadUI(function() {
         });
+
+        // wait until the ui has loaded to show it
+        _this.listen( "mediaready", function() {
+          uaWarningDiv.className = "butter-ua-warning-slide";
+          uaWarningDiv.getElementsByClassName("butter-ua-warning-text")[ 0 ].className = "butter-ua-warning-text-fade";
+          uaWarningDiv.getElementsByClassName("butter-btn-ipad")[ 0 ].className = "butter-btn-ipad-fade";
+          // wait for the transition to end before we remove the element
+          setTimeout(function () {
+            document.body.removeChild( uaWarningDiv );
+          }, 1500);
+        });
+
+
         if ( __showUI ) {
           uaWarningDiv.getElementsByClassName("butter-btn-ipad")[ 0 ].addEventListener( "click", function() {
-            __mediaObj.play();
-            __mediaObj.pause();
+            // We know that this will be the instance as it should be the last one that we created
+            var instance = Popcorn.instances[ Popcorn.instances.length - 1 ];
+            instance.play();
+            instance.pause();
             // do show UI shit here
-             uaWarningDiv.className = "butter-ua-warning-slide";
-             uaWarningDiv.getElementsByClassName("butter-ua-warning-text")[ 0 ].className = "butter-ua-warning-text-fade";
-             uaWarningDiv.getElementsByClassName("butter-btn-ipad")[ 0 ].className = "butter-btn-ipad-fade";
-            setTimeout(function () {
-            document.body.removeChild( uaWarningDiv );
-            }, 1500);
-           
+             
           }, false);
         }
 
