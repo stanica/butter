@@ -16,8 +16,6 @@ define( [], function(){
         _elementWidth,
         _this = this;
 
-    _element.className = "zoom-bar scroll-bar";
-    _handle.className = "scroll-handle";
     _handle.title = "Change the zoom level of the timeline";
 
     _element.appendChild( _handle );
