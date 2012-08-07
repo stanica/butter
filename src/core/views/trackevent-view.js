@@ -22,14 +22,17 @@ define( [ "core/logger", "core/eventmanager", "util/dragndrop",
         _trackEvent = trackEvent,
         _dragging = false,
         _padding = 0,
+        _elementText,
         _this = this;
 
     EventManagerWrapper( _this );
 
-    function toggleHandles( state ){
-      _handles[ 0 ].style.visibility = state ? "visible" : "hidden";
-      _handles[ 1 ].style.visibility = state ? "visible" : "hidden";
-    } //toggleHandles
+    function toggleHandles( state ) {
+      if ( _parent ) {
+        _handles[ 0 ].style.visibility = state ? "visible" : "hidden";
+        _handles[ 1 ].style.visibility = state ? "visible" : "hidden";
+      }
+    }
 
     function resetContainer(){
       _element.style.left = _start * _zoom + "px";
@@ -84,8 +87,17 @@ define( [ "core/logger", "core/eventmanager", "util/dragndrop",
         get: function(){ return _type; },
         set: function( val ){
           _type = val;
-          _typeElement.innerHTML = _type;
           _element.setAttribute( "data-butter-trackevent-type", _type );
+        }
+      },
+      elementText: {
+        enumerable: true,
+        get: function() {
+          return _elementText;
+        },
+        set: function( val ) {
+          _elementText = val;
+          _typeElement.innerHTML = _elementText;
         }
       },
       selected: {
